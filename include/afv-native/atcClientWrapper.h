@@ -54,6 +54,8 @@ namespace afv_native::api {
         AFV_NATIVE_API bool IsAPIConnected();
 
         AFV_NATIVE_API bool Connect();
+        AFV_NATIVE_API bool ConnectWithToken(const std::string &token);
+        AFV_NATIVE_API bool ConnectWithToken(char *token);
         AFV_NATIVE_API void Disconnect();
 
         AFV_NATIVE_API void SetAudioApi(int api);

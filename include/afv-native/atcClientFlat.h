@@ -53,6 +53,7 @@ extern "C" {
     AFV_NATIVE_API bool ATCClient_IsVoiceConnected(ATCClientHandle handle);
     AFV_NATIVE_API bool ATCClient_IsAPIConnected(ATCClientHandle handle);
     AFV_NATIVE_API bool ATCClient_Connect(ATCClientHandle handle);
+    AFV_NATIVE_API bool ATCClient_ConnectWithToken(ATCClientHandle handle, char *token);
     AFV_NATIVE_API void ATCClient_Disconnect(ATCClientHandle handle);
     AFV_NATIVE_API void ATCClient_SetAudioApi(ATCClientHandle handle, unsigned int api);
     AFV_NATIVE_API void ATCClient_GetAudioApis(ATCClientHandle handle, AudioApisCallback callback);

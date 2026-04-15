@@ -78,6 +78,51 @@ void APISession::Connect() {
     }
 }
 
+void APISession::ConnectWithToken(const std::string &token) {
+    if (token.empty()) {
+        LOG("APISession", "ConnectWithToken called with empty token");
+        raiseError(APISessionError::InvalidAuthToken);
+        return;
+    }
+
+    mBearerToken = token;
+
+    // Parse the JWT to extract expiry, same logic as _authenticationCallback
+    try {
+        using namespace jwt::params;
+        std::error_code ec;
+        auto dec_token = jwt::decode(mBearerToken, algorithms({"none"}), ec, verify(false));
+        if (ec) {
+            LOG("APISession", "couldn't parse bearer token: %s", ec.message().c_str());
+            mBearerToken = "";
+            raiseError(APISessionError::InvalidAuthToken);
+            return;
+        }
+        if (dec_token.payload().has_claim("exp")) {
+            const time_t expiry       = dec_token.payload().get_claim_value<uint64_t>("exp");
+            const int    timeRemaining = expiry - ::time(nullptr);
+            if (timeRemaining <= 60) {
+                LOG("APISession", "token TTL (%d) is <= 60s.  Please check your system clock.", timeRemaining);
+                mBearerToken = "";
+                raiseError(APISessionError::AuthTokenExpiryTimeInPast);
+                return;
+            }
+            LOG("APISession", "API Token Expires in %d seconds", expiry - time(nullptr));
+            // No automatic refresh for externally provided tokens.
+            // The caller is responsible for providing a fresh token before expiry.
+        } else {
+            LOG("APISession", "no expiry claim in provided token");
+        }
+    } catch (const std::exception &e) {
+        LOG("APISession", "Couldn't parse Bearer Token to get expiry time: %s", e.what());
+        mBearerToken = "";
+        raiseError(APISessionError::InvalidAuthToken);
+        return;
+    }
+
+    setState(APISessionState::Running);
+}
+
 void afv::APISession::Disconnect() {
     mRefreshTokenTimer.disable();
     mBearerToken = "";

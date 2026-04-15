@@ -69,6 +69,7 @@ namespace afv_native { namespace afv {
         void               setBaseUrl(std::string newUrl);
 
         void Connect();
+        void ConnectWithToken(const std::string &token);
         void Disconnect();
 
         APISessionError getLastError() const;

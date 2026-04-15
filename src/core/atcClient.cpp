@@ -91,6 +91,22 @@ bool ATCClient::connect() {
     return true;
 }
 
+bool ATCClient::connectWithToken(const std::string &token) {
+    if (!isAPIConnected()) {
+        if (mAPISession.getState() != afv::APISessionState::Disconnected) {
+            LOG("afv::ATCClient",
+                "API State is not set to disconnected on connect attempt, "
+                "current state is %d",
+                static_cast<int>(mAPISession.getState()));
+            return false;
+        }
+        mAPISession.ConnectWithToken(token);
+    } else {
+        mVoiceSession.Connect();
+    }
+    return true;
+}
+
 void ATCClient::disconnect() {
     mDisconnecting.store(true);
     // voicesession must come first.

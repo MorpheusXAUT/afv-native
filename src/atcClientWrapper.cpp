@@ -108,6 +108,15 @@ bool afv_native::api::atcClient::Connect() {
     return client->connect();
 }
 
+bool afv_native::api::atcClient::ConnectWithToken(const std::string &token) {
+    std::lock_guard<std::recursive_mutex> lock(afvMutex);
+    return client->connectWithToken(token);
+}
+
+bool afv_native::api::atcClient::ConnectWithToken(char *token) {
+    return ConnectWithToken(std::string(token));
+}
+
 void afv_native::api::atcClient::Disconnect() {
     std::lock_guard<std::recursive_mutex> lock(afvMutex);
     return client->disconnect();

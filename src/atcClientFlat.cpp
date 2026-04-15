@@ -52,6 +52,10 @@ AFV_NATIVE_API bool ATCClient_Connect(ATCClientHandle handle) {
     return handle->impl->Connect();
 }
 
+AFV_NATIVE_API bool ATCClient_ConnectWithToken(ATCClientHandle handle, char *token) {
+    return handle->impl->ConnectWithToken(token);
+}
+
 AFV_NATIVE_API void ATCClient_Disconnect(ATCClientHandle handle) {
     return handle->impl->Disconnect();
 }

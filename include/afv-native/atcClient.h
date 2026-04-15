@@ -160,6 +160,17 @@ namespace afv_native {
          */
         bool connect();
 
+        /** connectWithToken() starts the Client using an externally provided bearer token,
+         * skipping the username/password authentication step.
+         *
+         * The token must be a valid JWT obtained from the AFV API (e.g. via VATSIM Connect OAuth).
+         * The caller is responsible for refreshing the token before it expires.
+         *
+         * @param token A valid JWT bearer token.
+         * @return true if the connection process was able to start.
+         */
+        bool connectWithToken(const std::string &token);
+
         /** disconnect() tears down the voice session and discards the authentication session data.
          *
          */
